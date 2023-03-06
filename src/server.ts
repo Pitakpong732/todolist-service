@@ -53,6 +53,19 @@ todoRouter.get("/", async (req: Request, res: Response) => {
   return res.json(result);
 });
 
+todoRouter.post("/edit/:id", async (req: Request, res: Response) => {
+  const id: string = req.params.id;
+  const todo = await TodoInstance.findOne({ where: { id } });
+  if (todo === null) {
+    console.log(`Not found id ${id}`)
+    res.status(404).json({ errorMessage: 'not found!' })
+  }
+  console.log(todo)
+  await todo!.update({...req.body});
+  await todo?.save();
+  res.status(200).json(todo);
+})
+
 app.listen(port, () => {
   console.log("server is running on port ", port);
 });
